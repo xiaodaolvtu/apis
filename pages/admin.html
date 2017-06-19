@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>admin</title>
 </head>
 <body>
     hello admin
+    <script type="text/javascript">
+            fetch('http://localhost:8080/test/aaa?access_token=aaab').then((response)=>{document.write('aaa');console.log(response);return response.blob();}).then((ret)=>{console.log(ret);document.write('aaa')})
+
+    </script>
 </body>
 </html>

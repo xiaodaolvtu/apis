@@ -28,7 +28,7 @@ sql.connect(function(err, client, done) {
     //连接成功，从models表中取得model，然后生成路由
     createRouters(server, err, client, done)
     //自定义路由
-    customRouters(server)
+//    customRouters(server)
 });
 //
 
