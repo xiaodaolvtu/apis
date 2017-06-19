@@ -4,8 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "pg": "^6.2.4",
     "restify": "^4.3.0",
-    "restify-clients": "^1.5.0"
+    "restify-clients": "^1.5.0",
+    "restify-router": "^0.4.2"
   },
   "scripts": {
     "start": "node ./app.js"

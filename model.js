@@ -25,28 +25,24 @@ function send(req, res, next, auth) {
     return next();
 }
 
-createApis(modelName, permission){
+function createApis(modelName, permission){
     let token = '';
     if(permission) accesstoken = getToken();
 
 }
 
 
-createModel(server, modelName, auth=true, model){
-    const root = /'+modelName;
-    let handleIt = (req, res, next)=>send(req, res, next, auth)
-
+function createModel(server, modelName, auth, model){
+    const root = '/'+modelName.trim();
+    const handleIt = (req, res, next)=>send(req, res, next, auth)
     //create api (modelName as the table)
     server.get(root, handleIt);  //select * from table
-
     server.get(root+'/:id', handleIt);//select id from table
-
     server.post(root, function create(req, res, next) {//select * from table where filter or do something else
         const params = res.params;
         res.send(201, Math.random().toString(36).substr(3, 8));
         return next();
     });
-
     server.post(root+'/:id',function create(req, res, next) { //select id from table where filter
         const params = res.params;
         const filter = params.filter;
@@ -54,7 +50,23 @@ createModel(server, modelName, auth=true, model){
         return next();
     });
     //create table
-
+    
     //create filter
 
 }
+
+
+function createRouters(server, err, client, done){
+    client.query('SELECT * from models',[], function(err, result) {
+        done();// 释放连接（将其返回给连接池）
+        if(err) {
+            return console.error('查询出错', err);
+        }
+        //command, rowCount, oid , rows
+        result.rows.forEach((row,i)=>createModel(server, row.model, row.auth, null))
+        console.log(result.rows[0].model); //output: Hello World
+    });
+}
+
+module.exports = { createRouters }
+
