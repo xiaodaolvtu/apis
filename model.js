@@ -17,7 +17,7 @@ function checkAuth(token){
 }
 
 function send(req, res, next, auth) {
-    console.log(auth+'')
+    console.log('send:'+auth+' : '+req.params.access_token +': ' checkAuth(req.params.access_token) )
     if(auth && req.params.access_token && checkAuth(req.params.access_token)) {
         console.log("认证成功")
         res.send('hello ' + req.params.id);
@@ -35,6 +35,7 @@ function createApis(modelName, permission){
 
 function createModel(server, modelName, auth, model){
     const root = '/'+modelName.trim();
+    console.log('createModel:'+auth)
     const handleIt = (req, res, next)=>send(req, res, next, auth)
     //create api (modelName as the table)
     server.get(root, handleIt);  //select * from table
