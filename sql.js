@@ -5,7 +5,7 @@ const config = {
     database:"xdaoo",
     password:"1234",
     port:32793,
-
+    address:'69.85.84.221',
     // 扩展属性
     max:20, // 连接池最大连接数
     idleTimeoutMillis:3000, // 连接最大空闲时间 3s
