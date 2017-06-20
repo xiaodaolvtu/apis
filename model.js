@@ -17,12 +17,16 @@ function checkAuth(token){
 }
 
 function send(req, res, next, auth) {
-    console.log('send:'+auth+' : '+req.params.access_token +': ' checkAuth(req.params.access_token) )
-    if(auth && req.params.access_token && checkAuth(req.params.access_token)) {
-        console.log("认证成功")
-        res.send('hello ' + req.params.id);
+    if(auth){//须认证的接口
+        if( req.params.access_token && checkAuth(req.params.access_token)) {
+            console.log("认证成功")
+            res.send('hello ' + req.params.id);
+        }
+        else{
+            res.send(203);
+        }
     }
-    else  res.send(203);
+    else  res.send('hi ' + req.params.id);  //无须认证的接口
     return next();
 }
 
@@ -35,7 +39,6 @@ function createApis(modelName, permission){
 
 function createModel(server, modelName, auth, model){
     const root = '/'+modelName.trim();
-    console.log('createModel:'+auth)
     const handleIt = (req, res, next)=>send(req, res, next, auth)
     //create api (modelName as the table)
     server.get(root, handleIt);  //select * from table
@@ -65,9 +68,7 @@ function createRouters(server, err, client, done){
             return console.error('查询出错', err);
         }
         //command, rowCount, oid , rows
-        console.log(JSON.stringify(result))
         result.rows.forEach((row,i)=>createModel(server, row.model, row.auth, null))
-        console.log(result.rows[0].model); //output: Hello World
     });
 }
 
