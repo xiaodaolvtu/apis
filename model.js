@@ -17,6 +17,7 @@ function checkAuth(token){
 }
 
 function send(req, res, next, auth) {
+    console.log(auth+'')
     if(auth && req.params.access_token && checkAuth(req.params.access_token)) {
         console.log("认证成功")
         res.send('hello ' + req.params.id);
@@ -63,6 +64,7 @@ function createRouters(server, err, client, done){
             return console.error('查询出错', err);
         }
         //command, rowCount, oid , rows
+        console.log(JSON.stringify(result))
         result.rows.forEach((row,i)=>createModel(server, row.model, row.auth, null))
         console.log(result.rows[0].model); //output: Hello World
     });
