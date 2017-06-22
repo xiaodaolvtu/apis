@@ -9,10 +9,37 @@ var hooks = require("./hooks");
 var sql = require("./sql.js"); // 数据库连接池
 var { createRouters } = require("./model.js");
 function customRouters(server,auth){
-    server.get('/.*/',restify.serveStatic({  //  'localhost:8080/admin.html'
-        directory: './pages',
-        default: 'admin.html'
-    }));
+    // server.get('/.*/',restify.serveStatic({  //  'localhost:8080/admin.html'
+    //     directory: './pages',
+    //     default: 'admin.html'
+    // }));
+    server.get('/login', function(req, res){
+        const parmas = req.params||{};
+        const username = parmas.username
+        if(!username) res.send(403,{a:2});
+        else sql.connect(function(err, client, done) {
+            if(err) {
+
+                console.log("@2:")
+                return console.error('数据库连接出错', err);
+            }
+            //连接成功，从models表中取得model，然后生成路由
+            const queryStr = `SELECT token from userinfo where username = '${username}'`
+            console.log(queryStr)
+            client.query(queryStr,[], function(err, result) {
+                done();// 释放连接（将其返回给连接池）
+                if(err) {
+                    return console.error('查询出错', err);
+                }
+                //command, rowCount, oid , rows
+                console.log("@1:"+result.rows[0])
+                res.send({token:result.rows[0]});
+            });
+            //自定义路由
+//    customRouters(server)
+        });
+    });
+
 }
 const server = restify.createServer({
     name: 'apiserver',
@@ -35,56 +62,10 @@ sql.connect(function(err, client, done) {
     //连接成功，从models表中取得model，然后生成路由
     createRouters(server, err, client, done)
     //自定义路由
-//    customRouters(server)
+    customRouters(server)
 });
 //
-server.get('/', function (req, res) {
-    var response = {
-        _links: {
-            self: { href: RESOURCES.INITIAL },
-            "http://www.baidu.com": { href:'' }
-        }
-    };
 
-    if (req.username) {
-        response._links["http://rel.example.com/secret"] = { href: RESOURCES.SECRET };
-    } else {
-        response._links["oauth2-token"] = {
-            href: RESOURCES.TOKEN,
-            "grant-types": "password",
-            "token-types": "bearer"
-        };
-    }
-
-    res.contentType = "application/hal+json";
-    res.send(response);
-});
-
-server.get('/login', function(req, res){
-    const parmas = req.params||{};
-    const username = parmas.username
-    console.log(JSON.stringify(username))
-    if(!username) res.send(403,{a:2});
-    else sql.connect(function(err, client, done) {
-        if(err) {
-
-            console.log("@2:")
-            return console.error('数据库连接出错', err);
-        }
-        //连接成功，从models表中取得model，然后生成路由
-        client.query('SELECT token from user where username = '+ username,[], function(err, result) {
-            done();// 释放连接（将其返回给连接池）
-            if(err) {
-                return console.error('查询出错', err);
-            }
-            //command, rowCount, oid , rows
-            console.log("@1:"+result.rows[0])
-            res.send(200,{a:1});
-        });
-        //自定义路由
-//    customRouters(server)
-    });
-});
 server.listen(9999, function () {
     console.log('%s listening at %s', server.name, server.url);
 });
