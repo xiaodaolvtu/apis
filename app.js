@@ -64,8 +64,7 @@ sql.connect(function(err, client, done) {
     //自定义路由
     customRouters(server)
 });
-//
 
-server.listen(9999, function () {
+server.listen(8080, function () {
     console.log('%s listening at %s', server.name, server.url);
 });

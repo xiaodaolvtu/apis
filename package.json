@@ -8,9 +8,12 @@
     "restify": "^4.3.0",
     "restify-clients": "^1.5.0",
     "restify-oauth2": "^4.0.4",
-    "restify-router": "^0.4.2"
+    "restify-router": "^0.4.2",
+    "webpack-dev-server": "^2.5.0"
   },
   "scripts": {
-    "start": "node ./app.js"
+    "start": "node ./app.js",
+    "dev": "NODE_ENV=development webpack-dev-server --progress",
+    "build": "NODE_ENV=production webpack -p"
   }
 }
