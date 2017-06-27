@@ -1,10 +1,21 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>admin</title></head>
 <body>
     hello admin
-    <script type="text/javascript" src="127.0.0.1:8080/">
     <script type="text/javascript">
-            fetch('http://localhost:8080/test/aaa?access_token=aaab').then((response)=>{document.write('aaa');console.log(response);return response.blob();}).then((ret)=>{console.log(ret);document.write('aaa')})
-
+        let formData = new FormData();
+        formData.append("username","xdaoo");
+        formData.append("password","1");
+        fetch('http://69.85.84.221:8080/admin'{
+            method: 'POST',
+            headers: {},
+            body:JSON.stringify(params),
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+        }).then(ret=>{
+            console.log(ret.username)
+        })
     </script>
 </body>
 </html>

@@ -8,6 +8,8 @@ var restifyOAuth2 = require("restify-oauth2");
 var hooks = require("./hooks");
 var sql = require("./sql.js"); // 数据库连接池
 var { createRouters } = require("./model.js");
+var AdminRouters = require("./admin/apis/admin.js")
+
 function customRouters(server,auth){
     // server.get('/.*/',restify.serveStatic({  //  'localhost:8080/admin.html'
     //     directory: './pages',
@@ -19,13 +21,11 @@ function customRouters(server,auth){
         if(!username) res.send(403,{a:2});
         else sql.connect(function(err, client, done) {
             if(err) {
-
-                console.log("@2:")
                 return console.error('数据库连接出错', err);
             }
             //连接成功，从models表中取得model，然后生成路由
             const queryStr = `SELECT token from userinfo where username = '${username}'`
-            console.log(queryStr)
+
             client.query(queryStr,[], function(err, result) {
                 done();// 释放连接（将其返回给连接池）
                 if(err) {
@@ -63,6 +63,7 @@ sql.connect(function(err, client, done) {
     createRouters(server, err, client, done)
     //自定义路由
     customRouters(server)
+    AdminRouters(server,sql)
 });
 
 server.listen(8080, function () {
